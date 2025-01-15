@@ -62,6 +62,32 @@ class PlanoService
 
         return [
             'status' => true,
+            'message' => 'Produto Associado',
+            'planosProdutos' => [
+                'Plano' => [
+                    'id' => $plano->id,
+                    'nome' => $plano->nome,
+                    'descricao' => $plano->descricao,
+                ],
+                'Produto' => [
+                    'id' => $produto->id,
+                    'nome' => $produto->nome,
+                    'descricao' => $produto->descricao,
+                ]
+            ]
+        ];
+    }
+
+    public function destroyDesassociarProduto($planoId, $produtoId)
+    {
+        $plano = Plano::find($planoId);
+        $produto = Produto::find($produtoId);
+
+        $plano->produtos()->detach($produto->id);
+
+        return [
+            'status' => true,
+            'message' => 'Produto Desassociado',
             'planosProdutos' => [
                 'Plano' => [
                     'id' => $plano->id,
