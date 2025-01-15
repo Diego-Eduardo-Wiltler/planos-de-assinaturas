@@ -5,8 +5,11 @@ use App\Http\Resources\PlanoResource;
 use App\Models\Plano;
 use Illuminate\Support\Facades\Route;
 
-// Rota para obter todos os planos
-Route::get('/planos', [PlanoController::class, 'getAllPlanos']);
+// Obter todos os planos
+Route::get('/planos', [PlanoController::class, 'getTodosPlanos']);
 
-// Rota para obter todos os planos com seus produtos
-Route::get('/planos/produtos', [PlanoController::class, 'getAllPlanoProdutos']);
+// Obter todos os planos com seus produtos
+Route::get('/planos/produtos', [PlanoController::class, 'getPlanoProdutos']);
+
+// Associar produto a um plano
+Route::post('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'postAssociarProduto']);
