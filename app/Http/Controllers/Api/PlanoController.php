@@ -131,9 +131,27 @@ class PlanoController extends Controller
      * @param int $produtoId O ID do produto a ser associado ao plano
      * @return JsonResponse Retorna uma resposta JSON com o status da operação
      */
-    public function deleteDesassociarProduto(Request $request, $planoID, $produtoId): JsonResponse
+    public function destroyDesassociarProduto(Request $request, $planoID, $produtoId): JsonResponse
     {
         $result = $this->planoService->destroyDesassociarProduto($planoID, $produtoId);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(new PlanoProdutoResource($result['planos']), $status);
+    }
+
+    /**
+     * Remove um plano específico pelo ID
+     *
+     * Método utiliza o serviço `PlanoService` para excluir um plano do banco de dados com base no ID fornecido
+     * Retorna uma resposta JSON indicando o sucesso ou falha da operação, com os dados do plano removido
+     *
+     * @param int $planoID O ID do plano a ser removido
+     * @return JsonResponse  Retorna uma resposta JSON com o status da operação
+     */
+    public function destroyPlanos($planoID)
+    {
+        $result = $this->planoService->destroyPlanosPorId($planoID);
 
         $status = $result['status'] ? 200 : 400;
 
