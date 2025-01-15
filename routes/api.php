@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\PlanoController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Rota para obter todos os planos
+Route::get('/planos', [PlanoController::class, 'getAllPlanos']);
+
+// Rota para obter todos os planos com seus produtos
+Route::get('/planos/produtos', [PlanoController::class, 'getAllPlanoProdutos']);
