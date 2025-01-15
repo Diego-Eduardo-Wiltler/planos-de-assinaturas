@@ -35,11 +35,13 @@ class PlanoController extends Controller
      *
      * @return JsonResponse Retorna uma resposta JSON com a lista de planos
      */
-    public function getAllPlanos(): JsonResponse
+    public function getTodosPlanos(): JsonResponse
     {
         $result = $this->planoService->getPlanos();
 
-        return response()->json(PlanoResource::collection($result['planos'], $result['status'] ? 200 : 400));
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json($result, $status);
     }
 
     /**
@@ -50,11 +52,30 @@ class PlanoController extends Controller
      *
      * @return JsonResponse Retorna uma resposta JSON com os planos e produtos
      */
-    public function getAllPlanoProdutos(): JsonResponse
+    public function getPlanoProdutos(): JsonResponse
     {
         $result = $this->planoService->getPlanosProdutos();
 
-        return response()->json(PlanoResource::collection($result['planos'], $result['status'] ? 200 : 400));
+        $status = $result['status'] ? 200 : 400;
 
+        return response()->json(PlanoResource::collection($result['planos']), $status);
+    }
+    /**
+     * Associa um produto a um plano.
+     *
+     * ID de plano e um ID de produto, e associa o produto ao plano correspondente
+     *
+     * @param Request $request A solicitação HTTP contendo os dados necessários para a operação
+     * @param int $planoID O ID do plano ao qual o produto será associado
+     * @param int $produtoId O ID do produto a ser associado ao plano
+     * @return JsonResponse Retorna uma resposta JSON com o status da operação
+     */
+    public function postAssociarProduto(Request $request, $planoID, $produtoId): JsonResponse
+    {
+        $result = $this->planoService->postPlanoProduto($planoID, $produtoId);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json($result, $status);
     }
 }
