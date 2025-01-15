@@ -27,6 +27,53 @@ class PlanoService
         ];
     }
 
+    /**
+     * Recupera um plano por ID
+     *
+     * Método retorna o plano recuperado
+     *
+     * @param int $planoId O ID do plano a ser buscado
+     * @return array Retorna um array com o status e os planos
+     */
+    public function getIdPlanos($planoId)
+    {
+        $planos = Plano::find($planoId);
+
+        return [
+            'status' => true,
+            'planos' => $planos,
+        ];
+    }
+
+    /**
+     * Recupera todos os planos junto com seus produtos associados
+     *
+     * Método retorna uma lista de planos, com seus respectivos produtos associados, utilizando
+     * a N:N entre planos e produtos
+     *
+     * @return array Retorna um array com o status e os planos com produtos
+     */
+    public function getPlanosProdutos()
+    {
+        $planos = Plano::with('produtos')->get();
+
+        return [
+            'status' => true,
+            'planos' => $planos,
+        ];
+    }
+
+    /**
+     * Novo plano e associa um produto a ele
+     *
+     * Método cria um novo plano com os dados fornecidos e associa o plano a um produto especificado
+     * É realizada dentro de uma transação do banco de dados para garantir a consistência
+     * Em caso de falha, a transação é revertida.
+     *
+     * @param array $data Os dados do plano a ser criado
+     * @param int $produtoId O ID do produto a ser associado ao plano
+     * @return array Retorna um array contendo o status da operação
+     */
     public function storePlanos(array $data, $produtoId)
     {
         DB::beginTransaction();
@@ -54,24 +101,6 @@ class PlanoService
     }
 
     /**
-     * Recupera todos os planos junto com seus produtos associados
-     *
-     * Método retorna uma lista de planos, com seus respectivos produtos associados, utilizando
-     * a N:N entre planos e produtos
-     *
-     * @return array Retorna um array com o status e os planos com produtos
-     */
-    public function getPlanosProdutos()
-    {
-        $planos = Plano::with('produtos')->get();
-
-        return [
-            'status' => true,
-            'planos' => $planos,
-        ];
-    }
-
-    /**
      * Associa um produto a um plano
      *
      * Método encontra um plano e um produto com base nos IDs fornecidos e associa o produto ao plano
@@ -81,7 +110,6 @@ class PlanoService
      * @param int $produtoId O ID do produto a ser associado ao plano
      * @return array Retorna um array com o status da operação e os dados do plano e do produto
      */
-
     public function postPlanoProduto($planoId, $produtoId)
     {
         $planos = Plano::find($planoId);
@@ -95,6 +123,16 @@ class PlanoService
         ];
     }
 
+    /**
+     * Desassocia um produto a um plano
+     *
+     * Método encontra um plano e um produto com base nos IDs fornecidos e Desassocia o produto ao plano
+     * Depois da desassociação, ele retorna um array com o status da operação e os dados do plano e produto
+     *
+     * @param int $planoId O ID do plano ao qual o produto será desassociado
+     * @param int $produtoId O ID do produto a ser desassociado ao plano
+     * @return array Retorna um array com o status da operação e os dados do plano e do produto
+     */
     public function destroyDesassociarProduto($planoId, $produtoId)
     {
         $planos = Plano::find($planoId);
