@@ -15,14 +15,14 @@ use Illuminate\Database\Eloquent\Model;
 class Plano extends Model
 {
     /**
-     * Nome da tabela associada ao modelo.
+     * Nome da tabela associada ao modelo
      *
      * @var string
      */
     protected $table = 'planos';
 
     /**
-     * Campos preenchíveis no banco de dados.
+     * Campos preenchíveis no banco de dados
      *
      * @var array
      */
