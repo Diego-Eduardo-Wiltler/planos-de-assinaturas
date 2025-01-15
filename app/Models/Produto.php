@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ *
  * Classe Produto
  *
  * Representa um produto no sistema
