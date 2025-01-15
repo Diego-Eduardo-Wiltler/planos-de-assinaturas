@@ -13,3 +13,6 @@ Route::get('/planos/produtos', [PlanoController::class, 'getPlanoProdutos']);
 
 // Associar produto a um plano
 Route::post('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'postAssociarProduto']);
+
+// Desassociar produto a um plano
+Route::delete('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'deleteDesassociarProduto']);
