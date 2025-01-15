@@ -46,6 +46,24 @@ class PlanoController extends Controller
     }
 
     /**
+     * Retorna um plano específico pelo ID
+     *
+     * Método utiliza o serviço PlanoService para buscar um plano pelo ID fornecido
+     * e retorna a resposta em formato JSON
+     *
+     * @param int $planoId O ID do plano a ser buscado
+     * @return JsonResponse Retorna uma resposta JSON com a lista de planos
+     */
+    public function getPorIdPlanos($planoId): JsonResponse
+    {
+        $result = $this->planoService->getIdPlanos($planoId);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(new PlanoResource($result['planos']), $status);
+    }
+
+    /**
      * Novo plano e associa um produto a ele.
      *
      * Método recebe dados de um novo plano e um ID de produto para associar ao plano criado
@@ -54,7 +72,6 @@ class PlanoController extends Controller
      * retornando uma resposta JSON com os dados do plano criado
      *
      * @param Request $request A solicitação HTTP contendo os dados do plano e o ID do produto a ser associado
-     *
      * @return JsonResponse Retorna uma resposta JSON contendo os dados do plano criado e o status da operação.
      */
     public function store(Request $request): JsonResponse
