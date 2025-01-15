@@ -8,11 +8,14 @@ use Illuminate\Support\Facades\Route;
 // Obter todos os planos
 Route::get('/planos', [PlanoController::class, 'getTodosPlanos']);
 
-// Criar um novo plano
-Route::post('/planos', [PlanoController::class,'store']);
+// Obter plano por id
+Route::get('planos/{planoId}', [PlanoController::class, 'getPorIdPlanos']);
 
 // Obter todos os planos com seus produtos
 Route::get('/planos/produtos', [PlanoController::class, 'getPlanoProdutos']);
+
+// Criar um novo plano
+Route::post('/planos', [PlanoController::class,'store']);
 
 // Associar produto a um plano
 Route::post('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'postAssociarProduto']);
