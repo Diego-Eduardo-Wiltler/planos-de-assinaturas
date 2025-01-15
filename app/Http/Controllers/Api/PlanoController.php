@@ -78,4 +78,14 @@ class PlanoController extends Controller
 
         return response()->json($result, $status);
     }
+
+    public function deleteDesassociarProduto(Request $request, $planoID, $produtoId): JsonResponse
+    {
+        $result = $this->planoService->destroyDesassociarProduto($planoID, $produtoId);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json($result, $status);
+    }
+
 }
