@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PlanoResource;
 use App\Services\PlanoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class PlanoController extends Controller
     {
         $result = $this->planoService->getPlanos();
 
-        return response()->json($result, $result['status'] ? 200 : 400);
+        return response()->json(PlanoResource::collection($result['planos'], $result['status'] ? 200 : 400));
     }
 
     /**
@@ -53,6 +54,7 @@ class PlanoController extends Controller
     {
         $result = $this->planoService->getPlanosProdutos();
 
-        return response()->json($result);
+        return response()->json(PlanoResource::collection($result['planos'], $result['status'] ? 200 : 400));
+
     }
 }
