@@ -21,4 +21,7 @@ Route::post('/planos', [PlanoController::class,'store']);
 Route::post('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'postAssociarProduto']);
 
 // Desassociar produto a um plano
-Route::delete('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'deleteDesassociarProduto']);
+Route::delete('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'destroyDesassociarProduto']);
+
+// Deletar um plano
+Route::delete('/planos/{planoId}', [PlanoController::class, 'destroyPlanos']);
