@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PlanoProdutoResource;
 use App\Http\Resources\PlanoResource;
 use App\Services\PlanoService;
 use Illuminate\Http\JsonResponse;
@@ -41,7 +42,31 @@ class PlanoController extends Controller
 
         $status = $result['status'] ? 200 : 400;
 
-        return response()->json($result, $status);
+        return response()->json(PlanoResource::collection($result['planos']), $status);
+    }
+
+    /**
+     * Novo plano e associa um produto a ele.
+     *
+     * Método recebe dados de um novo plano e um ID de produto para associar ao plano criado
+     *
+     * Ele utiliza o serviço `PlanoService` para criar o plano e realizar a associação com o produto,
+     * retornando uma resposta JSON com os dados do plano criado
+     *
+     * @param Request $request A solicitação HTTP contendo os dados do plano e o ID do produto a ser associado
+     *
+     * @return JsonResponse Retorna uma resposta JSON contendo os dados do plano criado e o status da operação.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->only(['nome', 'descricao']);
+        $produtoId = $request->input('produto_id');
+
+        $result = $this->planoService->storePlanos($data, $produtoId);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(new PlanoProdutoResource($result['planos']), $status);
     }
 
     /**
@@ -58,7 +83,7 @@ class PlanoController extends Controller
 
         $status = $result['status'] ? 200 : 400;
 
-        return response()->json(PlanoResource::collection($result['planos']), $status);
+        return response()->json(PlanoProdutoResource::collection($result['planos']), $status);
     }
     /**
      * Associa um produto a um plano.
@@ -76,16 +101,25 @@ class PlanoController extends Controller
 
         $status = $result['status'] ? 200 : 400;
 
-        return response()->json($result, $status);
+        return response()->json(new PlanoProdutoResource($result['planos']), $status);
     }
 
+    /**
+     * Desassocia um produto a um plano.
+     *
+     * ID de plano e um ID de produto, e Desassocia o produto ao plano correspondente
+     *
+     * @param Request $request A solicitação HTTP contendo os dados necessários para a operação
+     * @param int $planoID O ID do plano ao qual o produto será associado
+     * @param int $produtoId O ID do produto a ser associado ao plano
+     * @return JsonResponse Retorna uma resposta JSON com o status da operação
+     */
     public function deleteDesassociarProduto(Request $request, $planoID, $produtoId): JsonResponse
     {
         $result = $this->planoService->destroyDesassociarProduto($planoID, $produtoId);
 
         $status = $result['status'] ? 200 : 400;
 
-        return response()->json($result, $status);
+        return response()->json(new PlanoProdutoResource($result['planos']), $status);
     }
-
 }
