@@ -145,4 +145,34 @@ class PlanoService
             'planos' => $planos,
         ];
     }
+
+    /**
+     * Exclui um plano específico pelo ID
+     *
+     * Método busca um plano pelo ID fornecido, tenta excluí-lo do banco de dados e retorna
+     * um array indicando o sucesso ou falha da operação, incluindo os dados do plano excluído ou não
+     *
+     * @param int $planoId O ID do plano a ser excluído.
+     * @return array Retorna um array com o status da operação e o plano excluído
+     */
+    public function destroyPlanosPorId($planoId)
+    {
+        $planos = Plano::find($planoId);
+
+        try {
+            $planos->delete();
+
+            return [
+                'status' => true,
+                'planos' => $planos,
+                'message' => 'Plano excluído',
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => false,
+                'planos' => $planos,
+                'message' => 'Plano não excluído',
+            ];
+        }
+    }
 }
