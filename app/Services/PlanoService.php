@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Models\Plano;
 use App\Models\Produto;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\Return_;
 
 class PlanoService
 {
@@ -22,6 +25,32 @@ class PlanoService
             'status' => true,
             'planos' => $planos,
         ];
+    }
+
+    public function storePlanos(array $data, $produtoId)
+    {
+        DB::beginTransaction();
+        try {
+            $planos = Plano::create($data);
+            $produto = Produto::find($produtoId);
+
+            $planos->produtos()->attach($produto->id);
+
+            DB::commit();
+
+            return [
+                'status' => true,
+                'planos' => $planos,
+                'message' => 'Plano Cadastrado'
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return [
+                'status' => false,
+                'message' => 'Plano não cadastrado',
+            ];
+        }
     }
 
     /**
@@ -55,51 +84,27 @@ class PlanoService
 
     public function postPlanoProduto($planoId, $produtoId)
     {
-        $plano = Plano::find($planoId);
+        $planos = Plano::find($planoId);
         $produto = Produto::find($produtoId);
 
-        $plano->produtos()->attach($produto->id);
+        $planos->produtos()->attach($produto->id);
 
         return [
             'status' => true,
-            'message' => 'Produto Associado',
-            'planosProdutos' => [
-                'Plano' => [
-                    'id' => $plano->id,
-                    'nome' => $plano->nome,
-                    'descricao' => $plano->descricao,
-                ],
-                'Produto' => [
-                    'id' => $produto->id,
-                    'nome' => $produto->nome,
-                    'descricao' => $produto->descricao,
-                ]
-            ]
+            'planos' => $planos,
         ];
     }
 
     public function destroyDesassociarProduto($planoId, $produtoId)
     {
-        $plano = Plano::find($planoId);
+        $planos = Plano::find($planoId);
         $produto = Produto::find($produtoId);
 
-        $plano->produtos()->detach($produto->id);
+        $planos->produtos()->detach($produto->id);
 
         return [
             'status' => true,
-            'message' => 'Produto Desassociado',
-            'planosProdutos' => [
-                'Plano' => [
-                    'id' => $plano->id,
-                    'nome' => $plano->nome,
-                    'descricao' => $plano->descricao,
-                ],
-                'Produto' => [
-                    'id' => $produto->id,
-                    'nome' => $produto->nome,
-                    'descricao' => $produto->descricao,
-                ]
-            ]
+            'planos' => $planos,
         ];
     }
 }
