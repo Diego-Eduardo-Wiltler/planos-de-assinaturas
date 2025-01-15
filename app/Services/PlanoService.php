@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Plano;
+use App\Models\Produto;
 
 class PlanoService
 {
@@ -38,6 +39,41 @@ class PlanoService
         return [
             'status' => true,
             'planos' => $planos,
+        ];
+    }
+
+    /**
+     * Associa um produto a um plano
+     *
+     * Método encontra um plano e um produto com base nos IDs fornecidos e associa o produto ao plano
+     * Depois da associação, ele retorna um array com o status da operação e os dados do plano e produto associados
+     *
+     * @param int $planoId O ID do plano ao qual o produto será associado
+     * @param int $produtoId O ID do produto a ser associado ao plano
+     * @return array Retorna um array com o status da operação e os dados do plano e do produto
+     */
+
+    public function postPlanoProduto($planoId, $produtoId)
+    {
+        $plano = Plano::find($planoId);
+        $produto = Produto::find($produtoId);
+
+        $plano->produtos()->attach($produto->id);
+
+        return [
+            'status' => true,
+            'planosProdutos' => [
+                'Plano' => [
+                    'id' => $plano->id,
+                    'nome' => $plano->nome,
+                    'descricao' => $plano->descricao,
+                ],
+                'Produto' => [
+                    'id' => $produto->id,
+                    'nome' => $produto->nome,
+                    'descricao' => $produto->descricao,
+                ]
+            ]
         ];
     }
 }
