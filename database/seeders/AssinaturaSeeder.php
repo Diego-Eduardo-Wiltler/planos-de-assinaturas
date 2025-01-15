@@ -12,7 +12,7 @@ class AssinaturaSeeder extends Seeder
     /**
      * Executa os seeds para popular a tabela de planos e produtos
      *
-     * Este seeder cria planos e produtos e associa os produtos aos planos correspondentes
+     * Cria planos e produtos e associa os produtos aos planos correspondentes
      *
      * 1- Cria dois planos: "Claro Pós 50GB" e "Claro Controle 25GB"
      * 2- Cria três produtos: "Internet", "Internet" (outro pacote) e "WhatsApp Ilimitado"
