@@ -20,7 +20,6 @@ class PlanoResource extends JsonResource
             'descricao' => $this->descricao,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'produtos' => ProdutoResource::collection($this->produtos),
         ];
     }
 }
