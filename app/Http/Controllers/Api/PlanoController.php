@@ -107,7 +107,7 @@ class PlanoController extends Controller
      * retornando uma resposta JSON com os dados do plano criado
      *
      * @param Request $request A solicitação HTTP contendo os dados do plano e o ID do produto a ser associado
-     * @return JsonResponse Retorna uma resposta JSON contendo os dados do plano criado e o status da operação.
+     * @return JsonResponse Retorna uma resposta JSON contendo os dados do plano criado e o status da operação
      */
     public function store(Request $request): JsonResponse
     {

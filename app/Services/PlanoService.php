@@ -65,7 +65,7 @@ class PlanoService
     }
 
     /**
-     * Recuperar todos os logs de planos e produtos.
+     * Recuperar todos os logs de planos e produtos
      *
      * @return array
      */

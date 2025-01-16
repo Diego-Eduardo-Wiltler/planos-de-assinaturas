@@ -47,7 +47,7 @@ class ProdutoService{
      *
      * Método cria um novo produto com os dados fornecidos e associa o produto a um produto especificado
      * É realizada dentro de uma transação do banco de dados para garantir a consistência
-     * Em caso de falha, a transação é revertida.
+     * Em caso de falha, a transação é revertida
      *
      * @param array $data Os dados do produto a ser criado
      * @param int $produtoId O ID do produto a ser associado ao produto
@@ -76,9 +76,9 @@ class ProdutoService{
         }
     }
     /**
-     * Atualiza os dados de um produto existente.
+     * Atualiza os dados de um produto existente
      *
-     * Método recebe os novos dados de um produto e os valida antes de atualizar o produto existente.
+     * Método recebe os novos dados de um produto e os valida antes de atualizar o produto existente
      *
      * Ele utiliza o serviço ProdutoService para atualizar o produto e retorna uma resposta JSON
      * com os dados do produto atualizado
