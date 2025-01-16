@@ -42,4 +42,9 @@ class Plano extends Model
     {
         return $this->belongsToMany(Produto::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(PlanoProdutoLog::class);
+    }
 }
