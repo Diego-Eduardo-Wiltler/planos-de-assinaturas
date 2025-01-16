@@ -56,7 +56,7 @@ class PlanoService
      */
     public function getPlanosProdutos()
     {
-        $planos = Plano::with('produtos')->with('logs')->get();
+        $planos = Plano::with(['produtos','logs'])->get();
 
         return [
             'status' => true,
