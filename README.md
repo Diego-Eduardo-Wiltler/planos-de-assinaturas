@@ -41,9 +41,10 @@ Para acessar a API, é recomendado utilizar o Insomnia para simular requisiçõe
 - http://127.0.0.1:8000/api/planos
 - http://127.0.0.1:8000/api/produtos
 
+```
+
 Link para requisições do Insomnia: [Acesse o arquivo no Google Drive](https://drive.google.com/file/d/1rYcFH5UFg_UmCImRvaO9wpKHP5h-Nj0s/view?usp=sharing)
 
-```
 ## Decisões técnicas tomadas durante o desenvolvimento
 
 * Insomnia para gerenciar requisições: Utilizei o Insomnia para organizar e testar as requisições, facilitando a visualização das rotas e parâmetros.
