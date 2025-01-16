@@ -41,6 +41,8 @@ Para acessar a API, é recomendado utilizar o Insomnia para simular requisiçõe
 http://127.0.0.1:8000/api/planos
 http://127.0.0.1:8000/api/produtos
 
+Link para requisições do insomnia: https://drive.google.com/file/d/1rYcFH5UFg_UmCImRvaO9wpKHP5h-Nj0s/view?usp=sharing
+Link para arquivo TXT:
 ```
 ## Decisões técnicas tomadas durante o desenvolvimento
 
@@ -56,3 +58,14 @@ http://127.0.0.1:8000/api/produtos
 
 * Histórico de ações: Para registrar associações e desassociações, criei uma tabela intermediária de logs. Diferente da tabela PlanoProduto, esta tem mais campos, justificando a criação de uma model e um resource próprios para logs.
 
+### Expansão do projeto
+
+* Combos: Criação de pacotes que agrupam produtos e planos, permitindo ofertas combinadas.
+
+* Contratos de Plano: Gestão de contratos associados a planos, incluindo detalhes como duração, termos e condições.
+
+* Histórico Detalhado: Endpoints específicos para consultar o histórico de planos ou produtos, facilitando o acompanhamento de alterações e transações.
+
+* Validações Robustas: Implementação de regras para evitar associações duplicadas de produtos a planos, garantindo a integridade dos dados.
+
+* Novas Funcionalidades: Desenvolvimento de filtros para planos, históricos e relatórios, aprimorando a experiência do usuário e a eficiência na busca de informações.
