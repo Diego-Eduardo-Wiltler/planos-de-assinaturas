@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PlanoProdutoLogResource;
 use App\Http\Resources\PlanoProdutoResource;
 use App\Http\Resources\PlanoResource;
 use App\Services\PlanoService;
@@ -44,6 +45,22 @@ class PlanoController extends Controller
 
         return response()->json(PlanoResource::collection($result['planos']), $status);
     }
+    /**
+     * Recupera todos os logs de planos
+     *
+     * Método utiliza o serviço PlanoService para buscar todos os logs relacionados aos planos
+     * e retorna esses logs em uma formato JSON
+     *
+     * @return JsonResponse Retorna uma resposta JSON contendo os logs
+     */
+    public function getLogs(): JsonResponse
+    {
+        $result = $this->planoService->getTodosLogs();
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(PlanoProdutoLogResource::collection($result['logs']), $status);
+    }
 
     /**
      * Retorna um plano específico pelo ID
@@ -61,6 +78,23 @@ class PlanoController extends Controller
         $status = $result['status'] ? 200 : 400;
 
         return response()->json(new PlanoResource($result['planos']), $status);
+    }
+
+    /**
+     * Recupera todos os planos com seus produtos associados
+     *
+     * Método utiliza o serviço PlanoService para buscar todos os planos,
+     * juntamente com seus respectivos produtos, e retorna a resposta em formato JSON
+     *
+     * @return JsonResponse Retorna uma resposta JSON com os planos e produtos
+     */
+    public function getPlanoProdutos(): JsonResponse
+    {
+        $result = $this->planoService->getPlanosProdutos();
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(PlanoProdutoResource::collection($result['planos']), $status);
     }
 
     /**
@@ -86,22 +120,7 @@ class PlanoController extends Controller
         return response()->json(new PlanoProdutoResource($result['planos']), $status);
     }
 
-    /**
-     * Recupera todos os planos com seus produtos associados
-     *
-     * Método utiliza o serviço PlanoService para buscar todos os planos,
-     * juntamente com seus respectivos produtos, e retorna a resposta em formato JSON
-     *
-     * @return JsonResponse Retorna uma resposta JSON com os planos e produtos
-     */
-    public function getPlanoProdutos(): JsonResponse
-    {
-        $result = $this->planoService->getPlanosProdutos();
 
-        $status = $result['status'] ? 200 : 400;
-
-        return response()->json(PlanoProdutoResource::collection($result['planos']), $status);
-    }
     /**
      * Associa um produto a um plano.
      *
@@ -143,7 +162,7 @@ class PlanoController extends Controller
     /**
      * Remove um plano específico pelo ID
      *
-     * Método utiliza o serviço `PlanoService` para excluir um plano do banco de dados com base no ID fornecido
+     * Método utiliza o serviço PlanoService para excluir um plano do banco de dados com base no ID fornecido
      * Retorna uma resposta JSON indicando o sucesso ou falha da operação, com os dados do plano removido
      *
      * @param int $planoID O ID do plano a ser removido
