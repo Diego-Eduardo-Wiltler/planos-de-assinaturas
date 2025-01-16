@@ -83,7 +83,7 @@ class PlanoService
      *
      * Método cria um novo plano com os dados fornecidos e associa o plano a um produto especificado
      * É realizada dentro de uma transação do banco de dados para garantir a consistência
-     * Em caso de falha, a transação é revertida.
+     * Em caso de falha, a transação é revertida
      *
      * @param array $data Os dados do plano a ser criado
      * @param int $produtoId O ID do produto a ser associado ao plano
@@ -145,6 +145,42 @@ class PlanoService
     }
 
     /**
+     * Atualiza os dados de um plano existente
+     *
+     * Método recebe os novos dados de um plano e realiza a atualização no sistema
+     *
+     * Ele utiliza o serviço PlanoService para atualizar o plano e retorna um array
+     * indicando o status da operação e os dados do plano atualizado
+     *
+     * @param array $data Os dados atualizados do plano
+     * @param int $planoId O ID do plano a ser atualizado
+     * @return array Retorna um array contendo o status da operação, os dados do plano atualizado e uma mensagem
+     */
+    public function updatePlanos(array $data, $planoId)
+    {
+        $plano = Plano::findOrFail($planoId);
+        DB::beginTransaction();
+        try {
+            $plano->update($data);
+
+            DB::commit();
+
+            return [
+                'status' => true,
+                'plano' => $plano,
+                'message' => 'Plano atualizado',
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return [
+                'status' => false,
+                'message' => 'Plano não atualizado',
+            ];
+        }
+    }
+
+    /**
      * Desassocia um produto a um plano
      *
      * Método encontra um plano e um produto com base nos IDs fornecidos e Desassocia o produto ao plano
@@ -179,7 +215,7 @@ class PlanoService
      * Método busca um plano pelo ID fornecido, tenta excluí-lo do banco de dados e retorna
      * um array indicando o sucesso ou falha da operação, incluindo os dados do plano excluído ou não
      *
-     * @param int $planoId O ID do plano a ser excluído.
+     * @param int $planoId O ID do plano a ser excluído
      * @return array Retorna um array com o status da operação e o plano excluído
      */
     public function destroyPlanosPorId($planoId)

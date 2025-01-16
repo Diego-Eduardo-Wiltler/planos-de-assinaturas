@@ -39,6 +39,7 @@ class PlanoController extends Controller
      */
     public function getTodosPlanos(): JsonResponse
     {
+
         $result = $this->planoService->getPlanos();
 
         $status = $result['status'] ? 200 : 400;
@@ -98,11 +99,11 @@ class PlanoController extends Controller
     }
 
     /**
-     * Novo plano e associa um produto a ele.
+     * Novo plano e associa um produto a ele
      *
      * Método recebe dados de um novo plano e um ID de produto para associar ao plano criado
      *
-     * Ele utiliza o serviço `PlanoService` para criar o plano e realizar a associação com o produto,
+     * Ele utiliza o serviço PlanoService para criar o plano e realizar a associação com o produto,
      * retornando uma resposta JSON com os dados do plano criado
      *
      * @param Request $request A solicitação HTTP contendo os dados do plano e o ID do produto a ser associado
@@ -110,6 +111,12 @@ class PlanoController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string|max:500',
+            'produto_id' => 'required|exists:produtos,id',
+        ]);
+
         $data = $request->only(['nome', 'descricao']);
         $produtoId = $request->input('produto_id');
 
@@ -133,6 +140,11 @@ class PlanoController extends Controller
      */
     public function postAssociarProduto(Request $request, $planoID, $produtoId): JsonResponse
     {
+        $request->validate([
+            'plano_id' => 'required|exists:planos,id',
+            'produto_id' => 'required|exists:produtos,id',
+        ]);
+
         $result = $this->planoService->postPlanoProduto($planoID, $produtoId);
 
         $status = $result['status'] ? 200 : 400;
@@ -141,7 +153,30 @@ class PlanoController extends Controller
     }
 
     /**
-     * Desassocia um produto a um plano.
+     * Atualiza os dados de um plano existente
+     *
+     * Método recebe os novos dados de um plano e os valida antes de atualizar o plano existente
+     *
+     * Ele utiliza o serviço PlanoService para atualizar o plano e retorna uma resposta JSON
+     * com os dados do plano atualizado
+     *
+     * @param Request $request A solicitação HTTP contendo os dados do plano a ser atualizado
+     * @param int $id O ID do plano a ser atualizado
+     * @return JsonResponse Retorna uma resposta JSON contendo os dados do plano atualizado e o status da operação
+     */
+    public function update(Request $request, $planoId): JsonResponse
+    {
+        $data = $request->only(['nome', 'descricao']);
+
+        $result = $this->planoService->updatePlanos($data, $planoId);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(new PlanoResource($result['plano']), $status);
+    }
+
+    /**
+     * Desassocia um produto a um plano
      *
      * ID de plano e um ID de produto, e Desassocia o produto ao plano correspondente
      *
@@ -152,6 +187,12 @@ class PlanoController extends Controller
      */
     public function destroyDesassociarProduto(Request $request, $planoID, $produtoId): JsonResponse
     {
+
+        $request->validate([
+            'plano_id' => 'required|exists:planos,id',
+            'produto_id' => 'required|exists:produtos,id',
+        ]);
+
         $result = $this->planoService->destroyDesassociarProduto($planoID, $produtoId);
 
         $status = $result['status'] ? 200 : 400;
@@ -168,8 +209,13 @@ class PlanoController extends Controller
      * @param int $planoID O ID do plano a ser removido
      * @return JsonResponse  Retorna uma resposta JSON com o status da operação
      */
-    public function destroyPlanos($planoID)
+    public function destroyPlanos(Request $request,$planoID)
     {
+
+        $request->validate([
+            'plano_id' => 'required|exists:planos,id',
+        ]);
+
         $result = $this->planoService->destroyPlanosPorId($planoID);
 
         $status = $result['status'] ? 200 : 400;
