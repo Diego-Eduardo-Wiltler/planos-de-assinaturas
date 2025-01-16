@@ -70,3 +70,5 @@ Link para requisições do Insomnia: [Acesse o arquivo no Google Drive](https://
 * Validações Robustas: Implementação de regras para evitar associações duplicadas de produtos a planos, garantindo a integridade dos dados.
 
 * Novas Funcionalidades: Desenvolvimento de filtros para planos, históricos e relatórios, aprimorando a experiência do usuário e a eficiência na busca de informações.
+
+* Bonûs: Refinar comentários
