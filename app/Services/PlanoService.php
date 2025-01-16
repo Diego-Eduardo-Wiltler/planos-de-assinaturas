@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Plano;
+use App\Models\PlanoProdutoLog;
 use App\Models\Produto;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -55,11 +56,25 @@ class PlanoService
      */
     public function getPlanosProdutos()
     {
-        $planos = Plano::with('produtos')->get();
+        $planos = Plano::with('produtos')->with('logs')->get();
 
         return [
             'status' => true,
             'planos' => $planos,
+        ];
+    }
+
+    /**
+     * Recuperar todos os logs de planos e produtos.
+     *
+     * @return array
+     */
+    public function getTodosLogs()
+    {
+        $logs = PlanoProdutoLog::with('produto')->get();
+        return [
+            'status' => true,
+            'logs' => $logs,
         ];
     }
 
@@ -117,6 +132,12 @@ class PlanoService
 
         $planos->produtos()->attach($produto->id);
 
+        PlanoProdutoLog::create([
+            'plano_id' => $planoId,
+            'produto_id' => $produtoId,
+            'action' => 'Adicionado',
+        ]);
+
         return [
             'status' => true,
             'planos' => $planos,
@@ -139,6 +160,12 @@ class PlanoService
         $produto = Produto::find($produtoId);
 
         $planos->produtos()->detach($produto->id);
+
+        PlanoProdutoLog::create([
+            'plano_id' => $planoId,
+            'produto_id' => $produtoId,
+            'action' => 'Removido',
+        ]);
 
         return [
             'status' => true,
