@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostAssociarPlanoFormRequest;
+use App\Http\Requests\StorePlanoFormRequest;
+use App\Http\Requests\UpdatePlanoFormRequest;
 use App\Http\Resources\PlanoProdutoLogResource;
 use App\Http\Resources\PlanoProdutoResource;
 use App\Http\Resources\PlanoResource;
@@ -109,23 +112,18 @@ class PlanoController extends Controller
      * @param Request $request A solicitação HTTP contendo os dados do plano e o ID do produto a ser associado
      * @return JsonResponse Retorna uma resposta JSON contendo os dados do plano criado e o status da operação
      */
-    public function store(Request $request): JsonResponse
-    {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string|max:500',
-            'produto_id' => 'required|exists:produtos,id',
-        ]);
+    public function store(StorePlanoFormRequest $request): JsonResponse
+{
+    $data = $request->validated();
+    $produtoId = $data['produto_id'];
 
-        $data = $request->only(['nome', 'descricao']);
-        $produtoId = $request->input('produto_id');
+    $result = $this->planoService->storePlanos($data, $produtoId);
 
-        $result = $this->planoService->storePlanos($data, $produtoId);
-
-        $status = $result['status'] ? 200 : 400;
-
-        return response()->json(new PlanoProdutoResource($result['planos']), $status);
+    if($result['status']){
+        return response()->json(new PlanoResource($result['planos']));
     }
+    return response()->json(['message' => $result['message']], 400);
+}
 
 
     /**
@@ -134,18 +132,14 @@ class PlanoController extends Controller
      * ID de plano e um ID de produto, e associa o produto ao plano correspondente
      *
      * @param Request $request A solicitação HTTP contendo os dados necessários para a operação
-     * @param int $planoID O ID do plano ao qual o produto será associado
+     * @param int $planoId O ID do plano ao qual o produto será associado
      * @param int $produtoId O ID do produto a ser associado ao plano
      * @return JsonResponse Retorna uma resposta JSON com o status da operação
      */
-    public function postAssociarProduto(Request $request, $planoID, $produtoId): JsonResponse
+    public function postAssociarProduto(PostAssociarPlanoFormRequest $request, $planoId, $produtoId): JsonResponse
     {
-        $request->validate([
-            'plano_id' => 'required|exists:planos,id',
-            'produto_id' => 'required|exists:produtos,id',
-        ]);
 
-        $result = $this->planoService->postPlanoProduto($planoID, $produtoId);
+        $result = $this->planoService->postPlanoProduto($planoId, $produtoId);
 
         $status = $result['status'] ? 200 : 400;
 
@@ -164,15 +158,17 @@ class PlanoController extends Controller
      * @param int $id O ID do plano a ser atualizado
      * @return JsonResponse Retorna uma resposta JSON contendo os dados do plano atualizado e o status da operação
      */
-    public function update(Request $request, $planoId): JsonResponse
+    public function update(UpdatePlanoFormRequest $request, $planoId): JsonResponse
     {
-        $data = $request->only(['nome', 'descricao']);
+        $data = $request->validated();
 
         $result = $this->planoService->updatePlanos($data, $planoId);
 
-        $status = $result['status'] ? 200 : 400;
+        if ($result['status']) {
 
-        return response()->json(new PlanoResource($result['plano']), $status);
+            return response()->json(new PlanoResource($result['plano']));
+        }
+        return response()->json(['message' => $result['message']], 400);
     }
 
     /**
@@ -181,23 +177,21 @@ class PlanoController extends Controller
      * ID de plano e um ID de produto, e Desassocia o produto ao plano correspondente
      *
      * @param Request $request A solicitação HTTP contendo os dados necessários para a operação
-     * @param int $planoID O ID do plano ao qual o produto será associado
+     * @param int $planoId O ID do plano ao qual o produto será associado
      * @param int $produtoId O ID do produto a ser associado ao plano
      * @return JsonResponse Retorna uma resposta JSON com o status da operação
      */
-    public function destroyDesassociarProduto(Request $request, $planoID, $produtoId): JsonResponse
+    public function destroyDesassociarProduto(Request $request, $planoId, $produtoId): JsonResponse
     {
 
-        $request->validate([
-            'plano_id' => 'required|exists:planos,id',
-            'produto_id' => 'required|exists:produtos,id',
-        ]);
+        $result = $this->planoService->destroyDesassociarProduto($planoId, $produtoId);
 
-        $result = $this->planoService->destroyDesassociarProduto($planoID, $produtoId);
+        if ($result['status']) {
 
-        $status = $result['status'] ? 200 : 400;
+            return response()->json(new PlanoResource($result['planos']));
+        }
 
-        return response()->json(new PlanoProdutoResource($result['planos']), $status);
+        return response()->json(['message' => $result['message']], 400);
     }
 
     /**
@@ -206,20 +200,19 @@ class PlanoController extends Controller
      * Método utiliza o serviço PlanoService para excluir um plano do banco de dados com base no ID fornecido
      * Retorna uma resposta JSON indicando o sucesso ou falha da operação, com os dados do plano removido
      *
-     * @param int $planoID O ID do plano a ser removido
+     * @param int $planoId O ID do plano a ser removido
      * @return JsonResponse  Retorna uma resposta JSON com o status da operação
      */
-    public function destroyPlanos(Request $request,$planoID)
+    public function destroyPlanos(Request $request, $planoId)
     {
 
-        $request->validate([
-            'plano_id' => 'required|exists:planos,id',
-        ]);
+        $result = $this->planoService->destroyPlanosPorId($planoId);
 
-        $result = $this->planoService->destroyPlanosPorId($planoID);
+        if ($result['status']) {
 
-        $status = $result['status'] ? 200 : 400;
+            return response()->json(new PlanoResource($result['planos']));
+        }
 
-        return response()->json(new PlanoProdutoResource($result['planos']), $status);
+        return response()->json(['message' => $result['message']], 400);
     }
 }

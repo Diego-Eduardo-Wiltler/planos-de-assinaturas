@@ -6,6 +6,8 @@ use App\Http\Resources\ProdutoResource;
 
 use App\Services\ProdutoService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProdutoFormRequest;
+use App\Http\Requests\UpdateProdutoFormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -59,9 +61,12 @@ class ProdutoController extends Controller
     {
         $result = $this->produtoService->getIdProdutos($produtoId);
 
-        $status = $result['status'] ? 200 : 400;
+        if ($result['status']) {
 
-        return response()->json(new ProdutoResource($result['produtos']), $status);
+            return response()->json(new ProdutoResource($result['produtos']));
+        }
+
+        return response()->json(['message' => $result['message']], 400);
     }
 
     /**
@@ -75,14 +80,9 @@ class ProdutoController extends Controller
      * @param Request $request A solicitação HTTP contendo os dados do produto a ser criado
      * @return JsonResponse Retorna uma resposta JSON contendo os dados do produto criado e o status da operação
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreProdutoFormRequest $request): JsonResponse
     {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string|max:500',
-        ]);
-
-        $data = $request->only(['nome', 'descricao']);
+        $data = $request->validated();
 
         $result = $this->produtoService->storeProdutos($data);
 
@@ -103,15 +103,18 @@ class ProdutoController extends Controller
      * @param int $id O ID do produto a ser atualizado
      * @return JsonResponse Retorna uma resposta JSON contendo os dados do produto atualizado e o status da operação
      */
-    public function update(Request $request, $produtoId): JsonResponse
+    public function update(UpdateProdutoFormRequest $request, $produtoId): JsonResponse
     {
-        $data = $request->only(['nome', 'descricao']);
+        $data = $request->validated();
 
         $result = $this->produtoService->updateProdutos($data, $produtoId);
 
-        $status = $result['status'] ? 200 : 400;
+        if ($result['status']) {
 
-        return response()->json(new ProdutoResource($result['produtos']), $status);
+            return response()->json(new ProdutoResource($result['produtos']));
+        }
+
+        return response()->json(['message' => $result['message']], 400);
     }
 
     /**
@@ -131,10 +134,11 @@ class ProdutoController extends Controller
 
         $result = $this->produtoService->destroyProdutosPorId($produtoId);
 
-        $status = $result['status'] ? 200 : 400;
+        if ($result['status']) {
 
-        return response()->json(new ProdutoResource($result['produtos']), $status);
+            return response()->json(new ProdutoResource($result['produtos']));
+        }
+
+        return response()->json(['message' => $result['message']], 400);
     }
-
-
 }

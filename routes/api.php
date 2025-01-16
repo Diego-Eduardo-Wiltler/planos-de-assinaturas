@@ -22,12 +22,13 @@ Route::get('plano-produto-logs', [PlanoController::class, 'getLogs']);
 Route::post('/planos', [PlanoController::class,'store']);
 
 // Associar produto a um plano
-Route::post('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'postAssociarProduto']);
+Route::post('/planos/{planoId}/produtos/{produtoID}', [PlanoController::class, 'postAssociarProduto']);
 
-Route::put('/planos/{planoID}', [PlanoController::class,'update']);
+// Atualizar produto
+Route::put('/planos/{planoId}', [PlanoController::class,'update']);
 
 // Desassociar produto a um plano
-Route::delete('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'destroyDesassociarProduto']);
+Route::delete('/planos/{planoId}/produtos/{produtoID}', [PlanoController::class, 'destroyDesassociarProduto']);
 
 // Deletar um plano
 Route::delete('/planos-deletar/{planoId}', [PlanoController::class, 'destroyPlanos']);
