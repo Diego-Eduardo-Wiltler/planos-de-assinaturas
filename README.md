@@ -38,11 +38,11 @@ php artisan serve
 
 Para acessar a API, é recomendado utilizar o Insomnia para simular requisições à API.
 ```
-http://127.0.0.1:8000/api/planos
-http://127.0.0.1:8000/api/produtos
+- http://127.0.0.1:8000/api/planos
+- http://127.0.0.1:8000/api/produtos
 
-Link para requisições do insomnia: https://drive.google.com/file/d/1rYcFH5UFg_UmCImRvaO9wpKHP5h-Nj0s/view?usp=sharing
-Link para arquivo TXT:
+Link para requisições do Insomnia: [Acesse o arquivo no Google Drive](https://drive.google.com/file/d/1rYcFH5UFg_UmCImRvaO9wpKHP5h-Nj0s/view?usp=sharing)
+
 ```
 ## Decisões técnicas tomadas durante o desenvolvimento
 
