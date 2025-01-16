@@ -12,7 +12,10 @@ Route::get('/planos', [PlanoController::class, 'getTodosPlanos']);
 Route::get('planos/{planoId}', [PlanoController::class, 'getPorIdPlanos']);
 
 // Obter todos os planos com seus produtos
-Route::get('/planos/produtos', [PlanoController::class, 'getPlanoProdutos']);
+Route::get('/planos-produtos', [PlanoController::class, 'getPlanoProdutos']);
+
+// Obter todos os logs separados
+Route::get('plano-produto-logs', [PlanoController::class, 'getLogs']);
 
 // Criar um novo plano
 Route::post('/planos', [PlanoController::class,'store']);
@@ -24,4 +27,4 @@ Route::post('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, '
 Route::delete('/planos/{planoID}/produtos/{produtoID}', [PlanoController::class, 'destroyDesassociarProduto']);
 
 // Deletar um plano
-Route::delete('/planos/{planoId}', [PlanoController::class, 'destroyPlanos']);
+Route::delete('/planos-deletar/{planoId}', [PlanoController::class, 'destroyPlanos']);
