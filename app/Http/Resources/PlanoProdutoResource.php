@@ -21,6 +21,7 @@ class PlanoProdutoResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'produtos' => ProdutoResource::collection($this->produtos),
+            'histórico' => PlanoProdutoLogResource::collection($this->logs)
         ];
     }
 }
