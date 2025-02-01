@@ -24,6 +24,23 @@ class PlanoController extends Controller
         $this->planoService = $planoService;
     }
 
+    /**
+     * GET /api/planos
+     *
+     * Retorna lista de planos cadastrados
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: array<PlanoResource>
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     */
 
     public function getTodosPlanos(): JsonResponse
     {
@@ -38,7 +55,24 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
+     /**
+     * GET /api/plano-produto-logs
+     *
+     * Retorna uma lista de logs
+     *
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoProdutoLogResource
+     * }
+     *
+     *  @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     */
     public function getLogs(): JsonResponse
     {
         $result = $this->planoService->getTodosLogs();
@@ -51,7 +85,27 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
+    /**
+     * GET /api/planos/{id}
+     *
+     * Retorna um unico plano pelo id
+     *
+     * @urlParam id int required ID do plano a ser encontrado. Example: 1
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoResource
+     * }
+     *
+     *  @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param $id ID do Plano a ser encontrado
+     *
+     */
     public function getPorIdPlanos($planoId): JsonResponse
     {
         $result = $this->planoService->getIdPlanos($planoId);
@@ -64,7 +118,24 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
+    /**
+     * GET /api/planos-produtos
+     *
+     * Retorna uma lista de logs
+     *
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoProdutoLogResource
+     * }
+     *
+     *  @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     */
     public function getPlanoProdutos(): JsonResponse
     {
         $result = $this->planoService->getPlanosProdutos();
@@ -77,7 +148,30 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
+    /**
+     * POST /api/planos
+     *
+     * Cadastra um novo plano
+     *
+     * @bodyParam nome string required Nome do plano. Example: Claro Pro 12 gb
+     * @bodyParam descricao string Descricao do plano. Example: Plano pós-pago com 50GB de internet
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param StorePlanoFormRequest $request Requisição contendo os dados do plano.
+     * @return JsonResponse
+     *
+     *
+     */
     public function store(StorePlanoFormRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -93,7 +187,30 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
+     /**
+     * POST /api/planos/{planoId}/produtos/{produtoID}
+     *
+     * Associa um plano a um produto
+     *
+     * @urlParam id int required ID do plano que ira receber um produto. Example: 1
+     * @urlParam id int required ID do produto que sera integrado a um plano. Example: 2
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoProdutoResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param int $planoId ID do plano que recebe produto
+     * @param int $produtoId ID do produto que integra no plano
+     * @return JsonResponse
+     *
+     */
     public function postAssociarProduto($planoId, $produtoId): JsonResponse
     {
 
@@ -107,6 +224,31 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
+    /**
+     * POST /api/planos/{planoId}
+     *
+     * Atualiza um plano existente
+     *
+     * @bodyParam nome string Nome do plano. Example: Claro Pro 12 gb
+     * @bodyParam descricao string Descricao do plano. Example: Plano pós-pago com 50GB de internet
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param UpdatePlanoFormRequest $request Requisição contendo os dados do plano.
+     * @param int $id ID do plano a ser atualizado
+     * @return JsonResponse
+     *
+     *
+     */
     public function update(UpdatePlanoFormRequest $request, $planoId): JsonResponse
     {
         $data = $request->validated();
@@ -121,8 +263,30 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
-    public function destroyDesassociarProduto(Request $request, $planoId, $produtoId): JsonResponse
+     /**
+     * DELETE api/planos/{planoId}/produtos/{produtoID}
+     *
+     * Remove um produto de um plano existente
+     *
+     * @urlParam id int required ID do plano que irá ter um plano removido. Example: 1
+     * @urlParam id int required ID do produto que irá ser removido. Example: 2
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param int $id planoId do plano que o produto será removido
+     * @param int $produtoId ID do produto a ser removido
+     * @return JsonResponse
+     */
+    public function destroyDesassociarProduto($planoId, $produtoId): JsonResponse
     {
 
         $result = $this->planoService->destroyDesassociarProduto($planoId, $produtoId);
@@ -135,7 +299,27 @@ class PlanoController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
+     /**
+     * DELETE api/planos/{planoId}/produtos/{produtoID}
+     *
+     * Remove um plano existente
+     *
+     * @urlParam id int required ID do plano que irá ser removido. Example: 1
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PlanoResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param int $planoId ID do plano a ser removido
+     * @return JsonResponse
+     */
     public function destroyPlanos($planoId)
     {
 
