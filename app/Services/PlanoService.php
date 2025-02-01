@@ -14,11 +14,10 @@ use PhpParser\Node\Stmt\Return_;
 class PlanoService
 {
     /**
-     * Recupera todos os planos ordenados por ID
+     * Obtém uma lista de planos ordenada por ID
      *
-     * Método retorna uma lista de planos da tabela de planos
-     *
-     * @return array Retorna um array com o status e os planos
+     * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection|null}
+     * @throws Exception Se houver falha ao listar os planos
      */
     public function getPlanos()
     {
@@ -47,13 +46,13 @@ class PlanoService
         return $response;
     }
 
-    /**
-     * Recupera um plano por ID
+     /**
+     * Obtém um planos por id
      *
-     * Método retorna o plano recuperado
-     *
-     * @param int $planoId O ID do plano a ser buscado
-     * @return array Retorna um array com o status e os planos
+     * @param int $id ID do plano.
+     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @throws ModelNotFoundException Se o plano não for encontrado
+     * @throws Exception Se houver falha ao buscar o plano
      */
     public function getIdPlanos($planoId)
     {
@@ -81,13 +80,11 @@ class PlanoService
         return $response;
     }
 
-    /**
-     * Recupera todos os planos junto com seus produtos associados
+     /**
+     * Obtém uma lista de planos e seus produtos
      *
-     * Método retorna uma lista de planos, com seus respectivos produtos associados, utilizando
-     * a N:N entre planos e produtos
-     *
-     * @return array Retorna um array com o status e os planos com produtos
+     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @throws Exception Se houver falha ao buscar o plano
      */
     public function getPlanosProdutos()
     {
@@ -110,9 +107,10 @@ class PlanoService
     }
 
     /**
-     * Recuperar todos os logs de planos e produtos
+     * Obtém uma lista de logs
      *
-     * @return array
+     * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection|null}
+     * @throws Exception Se houver falha ao buscar os logs
      */
     public function getTodosLogs()
     {
@@ -133,15 +131,12 @@ class PlanoService
     }
 
     /**
-     * Novo plano e associa um produto a ele
-     *
-     * Método cria um novo plano com os dados fornecidos e associa o plano a um produto especificado
-     * É realizada dentro de uma transação do banco de dados para garantir a consistência
-     * Em caso de falha, a transação é revertida
+     * Cria novo plano e associa um produto a ele
      *
      * @param array $data Os dados do plano a ser criado
      * @param int $produtoId O ID do produto a ser associado ao plano
-     * @return array Retorna um array contendo o status da operação
+     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @throws Exception Se houver falha durante a criação do plano
      */
     public function storePlanos(array $data, $produtoId)
     {
@@ -171,16 +166,13 @@ class PlanoService
         return $reponse;
     }
 
-
     /**
      * Associa um produto a um plano
      *
-     * Método encontra um plano e um produto com base nos IDs fornecidos e associa o produto ao plano
-     * Depois da associação, ele retorna um array com o status da operação e os dados do plano e produto associados
-     *
      * @param int $planoId O ID do plano ao qual o produto será associado
      * @param int $produtoId O ID do produto a ser associado ao plano
-     * @return array Retorna um array com o status da operação e os dados do plano e do produto
+     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @throws Exception Se houver falha durante a associação
      */
     public function postPlanoProduto($planoId, $produtoId)
     {
@@ -210,17 +202,15 @@ class PlanoService
         return $response;
     }
 
-    /**
+     /**
      * Atualiza os dados de um plano existente
      *
-     * Método recebe os novos dados de um plano e realiza a atualização no sistema
-     *
-     * Ele utiliza o serviço PlanoService para atualizar o plano e retorna um array
-     * indicando o status da operação e os dados do plano atualizado
-     *
-     * @param array $data Os dados atualizados do plano
+     * @param array $data Os dados do plano a ser atualizado
      * @param int $planoId O ID do plano a ser atualizado
-     * @return array Retorna um array contendo o status da operação, os dados do plano atualizado e uma mensagem
+     * @param int $produtoId O ID do produto a ser associado ao plano
+     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @throws ModelNotFoundException Se o plano não for encontrado
+     * @throws Exception Se houver falha durante a batalha
      */
     public function updatePlanos(array $data, $planoId)
     {
@@ -260,17 +250,14 @@ class PlanoService
         return $response;
     }
 
-
-
     /**
      * Desassocia um produto a um plano
      *
-     * Método encontra um plano e um produto com base nos IDs fornecidos e Desassocia o produto ao plano
-     * Depois da desassociação, ele retorna um array com o status da operação e os dados do plano e produto
-     *
-     * @param int $planoId O ID do plano ao qual o produto será desassociado
+     * @param int $planoId O ID do plano a ter produto desassociado
      * @param int $produtoId O ID do produto a ser desassociado ao plano
-     * @return array Retorna um array com o status da operação e os dados do plano e do produto
+     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @throws ModelNotFoundException Se o plano não for encontrado
+     * @throws Exception Se houver falha durante a batalha
      */
     public function destroyDesassociarProduto($planoId, $produtoId)
     {
@@ -323,16 +310,15 @@ class PlanoService
         return $response;
     }
 
-
     /**
-     * Exclui um plano específico pelo ID
+     * Exclui um plano existente pelo ID
      *
-     * Método busca um plano pelo ID fornecido, tenta excluí-lo do banco de dados e retorna
-     * um array indicando o sucesso ou falha da operação, incluindo os dados do plano excluído ou não
-     *
-     * @param int $planoId O ID do plano a ser excluído
-     * @return array Retorna um array com o status da operação e o plano excluído
+     * @param int $planoId O ID do plano a ser exluido
+     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @throws ModelNotFoundException Se o plano não for encontrado
+     * @throws Exception Se houver falha durante a batalha
      */
+
     public function destroyPlanosPorId($planoId)
     {
         $planos = null;
