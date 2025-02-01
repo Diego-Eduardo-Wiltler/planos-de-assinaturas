@@ -25,20 +25,22 @@ class ProdutoService
 
             Log::info('Listando todos os produtos', ['quantidade' => $produtos->count()]);
 
-            return [
+            $reponse = [
                 'status' => true,
-                'produtos' => $produtos,
+                'message' => 'Os produtos foram listados',
+                'data' => $produtos,
             ];
         } catch (Exception $e) {
             Log::error('Erro ao listar produtos', [
                 'error_message' => $e->getMessage(),
             ]);
 
-            return [
+            $reponse = [
                 'status' => false,
-                'message' => 'produtos não foram listados',
+                'message' => 'Os produtos não foram listados',
             ];
         }
+        return $reponse;
     }
 
 
@@ -58,9 +60,10 @@ class ProdutoService
 
             Log::info('Trazendo produto por Id', ['dados' => $produtos]);
 
-            return [
+            $response = [
                 'status' => true,
-                'produtos' => $produtos,
+                'message' => 'Listando produto por id',
+                'data' => $produtos,
             ];
         } catch (ModelNotFoundException | Exception $e) {
             Log::error('Erro ao tentar trazer produto', [
@@ -68,12 +71,13 @@ class ProdutoService
                 'produtoId' => $produtoId
             ]);
 
-            return [
+            $response = [
                 'status' => false,
-                'produtos' => null,
-                'message' => 'produto não foi listado',
+                'message' => 'Produto não foi listado',
             ];
         }
+
+        return $response;
     }
 
 
@@ -101,10 +105,10 @@ class ProdutoService
 
             Log::info('Produto cadastrado!', ['produtos' => $produtos]);
 
-            return [
+            $response = [
                 'status' => true,
-                'produtos' => $produtos,
-                'message' => 'produto Cadastrado'
+                'message' => 'Produto Cadastrado',
+                'data' => $produtos,
             ];
         } catch (Exception $e) {
             DB::rollBack();
@@ -114,11 +118,13 @@ class ProdutoService
                 'dados' => $data
             ]);
 
-            return [
+            $response = [
                 'status' => false,
                 'message' => 'produto não cadastrado',
             ];
         }
+
+        return $response;
     }
     /**
      * Atualiza os dados de um produto existente
@@ -149,8 +155,8 @@ class ProdutoService
 
             return [
                 'status' => true,
-                'produtos' => $produtos,
                 'message' => 'Produto atualizado',
+                'data' => $produtos,
             ];
         } catch (ModelNotFoundException | Exception $e) {
             DB::rollBack();
@@ -162,7 +168,6 @@ class ProdutoService
 
             return [
                 'status' => false,
-                'produtos' => null,
                 'message' => 'Produto não atualizado',
             ];
         }
@@ -192,8 +197,8 @@ class ProdutoService
 
             $reponse = [
                 'status' => true,
-                'produtos' => $produtos,
                 'message' => 'Produto excluído',
+                'data' => $produtos,
             ];
         } catch (ModelNotFoundException | Exception $e) {
 
@@ -204,7 +209,6 @@ class ProdutoService
 
             $reponse = [
                 'status' => false,
-                'produtos' => null,
                 'message' => 'Produto não encontrado',
             ];
         }
