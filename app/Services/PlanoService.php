@@ -49,7 +49,7 @@ class PlanoService
      /**
      * Obtém um planos por id
      *
-     * @param int $id ID do plano.
+     * @param int $planoId O ID do plano a ser encontrado
      * @return array{status: bool, message: string, data: \App\Models\Plano|null}
      * @throws ModelNotFoundException Se o plano não for encontrado
      * @throws Exception Se houver falha ao buscar o plano
@@ -83,7 +83,7 @@ class PlanoService
      /**
      * Obtém uma lista de planos e seus produtos
      *
-     * @return array{status: bool, message: string, data: \App\Models\Plano|null}
+     * @return array{status: bool, message: string, data:  \Illuminate\Database\Eloquent\Collection|null}
      * @throws Exception Se houver falha ao buscar o plano
      */
     public function getPlanosProdutos()

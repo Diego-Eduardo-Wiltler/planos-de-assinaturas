@@ -12,11 +12,10 @@ use PDOException;
 class ProdutoService
 {
     /**
-     * Recupera todos os produtos ordenados por ID
+     * Obtém uma lista de produtos ordenada por ID
      *
-     * Método retorna uma lista de produtos da tabela de produtos
-     *
-     * @return array Retorna um array com o status e os produtos
+     * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection|null}
+     * @throws Exception Se houver falha ao listar os produtos
      */
     public function getProdutos()
     {
@@ -43,14 +42,14 @@ class ProdutoService
         return $reponse;
     }
 
-
-    /**
-     * Recupera um produto por ID
+     /**
+     * Obtém um produto por ID
      *
-     * Método retorna o produtos recuperado
+     * @param int $produtoId O ID do produto a ser encontrado
+     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @throws ModelNotFoundException Se o produto não for encontrado
+     * @throws Exception Se houver falha ao buscar o produto
      *
-     * @param int $produtoId O ID do produto a ser buscado
-     * @return array Retorna um array com o status e os produtos
      */
     public function getIdProdutos($produtoId)
     {
@@ -79,18 +78,13 @@ class ProdutoService
 
         return $response;
     }
-
-
-    /**
-     * Novo produto
-     *
-     * Método cria um novo produto com os dados fornecidos e associa o produto a um produto especificado
-     * É realizada dentro de uma transação do banco de dados para garantir a consistência
-     * Em caso de falha, a transação é revertida
+     /**
+     * Cria um novo produto
      *
      * @param array $data Os dados do produto a ser criado
-     * @param int $produtoId O ID do produto a ser associado ao produto
-     * @return array Retorna um array contendo o status da operação
+     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @throws Exception Se houver falha ao buscar o produto
+     *
      */
     public function storeProdutos(array $data)
     {
@@ -126,17 +120,15 @@ class ProdutoService
 
         return $response;
     }
+
     /**
      * Atualiza os dados de um produto existente
      *
-     * Método recebe os novos dados de um produto e os valida antes de atualizar o produto existente
+     * @param int $produtoId O ID do produto a ser atualizado
+     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @throws ModelNotFoundException Se o produto não for encontrado
+     * @throws Exception Se houver falha ao buscar o produto
      *
-     * Ele utiliza o serviço ProdutoService para atualizar o produto e retorna uma resposta JSON
-     * com os dados do produto atualizado
-     *
-     * @param Request $request A solicitação HTTP contendo os dados do produto a ser atualizado
-     * @param int $id O ID do produto a ser atualizado
-     * @return JsonResponse Retorna uma resposta JSON contendo os dados do produto atualizado e o status da operação
      */
     public function updateProdutos(array $data, $produtoId)
     {
@@ -173,14 +165,14 @@ class ProdutoService
         }
     }
 
-    /**
-     * Exclui um produto específico pelo ID
+     /**
+     * Exclui um produto existente
      *
-     * Método busca um produto pelo ID fornecido, tenta excluí-lo do banco de dados e retorna
-     * um array indicando o sucesso ou falha da operação, incluindo os dados do produto excluído ou não
+     * @param int $produtoId O ID do produto a ser excluido
+     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @throws ModelNotFoundException Se o produto não for encontrado
+     * @throws Exception Se houver falha ao buscar o produto
      *
-     * @param int $produtoId O ID do produto a ser excluído
-     * @return array Retorna um array com o status da operação e o produto excluído
      */
 
     public function destroyProdutosPorId($produtoId)
