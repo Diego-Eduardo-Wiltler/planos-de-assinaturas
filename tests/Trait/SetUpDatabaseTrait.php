@@ -12,6 +12,6 @@ trait SetUpDatabaseTrait
 
     protected function setUpDatabase(): void
     {
-
+        $this->produtos - Produto::factory()->count(6)->create();
     }
 }
