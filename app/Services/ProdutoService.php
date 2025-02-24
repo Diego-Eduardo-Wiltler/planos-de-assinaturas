@@ -14,7 +14,7 @@ class ProdutoService
     /**
      * Obtém uma lista de produtos ordenada por ID
      *
-     * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection|null}
+     * @return array{data: \Illuminate\Database\Eloquent\Collection|null}
      * @throws Exception Se houver falha ao listar os produtos
      */
     public function getProdutos()
@@ -22,8 +22,6 @@ class ProdutoService
         $produtos = Produto::orderBy('id', 'ASC')->get();
 
         return  [
-            'status' => true,
-            'message' => 'Os produtos foram listados',
             'data' => $produtos,
         ];
     }
@@ -32,7 +30,7 @@ class ProdutoService
      * Obtém um produto por ID
      *
      * @param int $produtoId O ID do produto a ser encontrado
-     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @return array{string, data: \App\Models\Produto}
      * @throws ModelNotFoundException Se o produto não for encontrado
      * @throws Exception Se houver falha ao buscar o produto
      *
@@ -42,8 +40,6 @@ class ProdutoService
         $produtos = Produto::findOrFail($produtoId);
 
         return [
-            'status' => true,
-            'message' => 'Listando produto por id',
             'data' => $produtos,
         ];
     }
@@ -51,7 +47,7 @@ class ProdutoService
      * Cria um novo produto
      *
      * @param array $data Os dados do produto a ser criado
-     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @return array{data: \App\Models\Produto}
      * @throws Exception Se houver falha ao buscar o produto
      *
      */
@@ -64,8 +60,6 @@ class ProdutoService
         DB::commit();
 
         return [
-            'status' => true,
-            'message' => 'Produto Cadastrado',
             'data' => $produtos,
         ];
     }
@@ -74,7 +68,7 @@ class ProdutoService
      * Atualiza os dados de um produto existente
      *
      * @param int $produtoId O ID do produto a ser atualizado
-     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @return array{data: \App\Models\Produto}
      * @throws ModelNotFoundException Se o produto não for encontrado
      * @throws Exception Se houver falha ao buscar o produto
      *
@@ -90,8 +84,6 @@ class ProdutoService
         DB::commit();
 
         return [
-            'status' => true,
-            'message' => 'Produto atualizado',
             'data' => $produtos,
         ];
     }
@@ -100,7 +92,7 @@ class ProdutoService
      * Exclui um produto existente
      *
      * @param int $produtoId O ID do produto a ser excluido
-     * @return array{status: bool, message: string, data: \App\Models\Produto}
+     * @return array{data: \App\Models\Produto}
      * @throws ModelNotFoundException Se o produto não for encontrado
      * @throws Exception Se houver falha ao buscar o produto
      *
@@ -113,8 +105,6 @@ class ProdutoService
         $produtos->delete();
 
         return [
-            'status' => true,
-            'message' => 'Produto excluído',
             'data' => $produtos,
         ];
     }
