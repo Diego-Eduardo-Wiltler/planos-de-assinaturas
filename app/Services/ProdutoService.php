@@ -19,30 +19,16 @@ class ProdutoService
      */
     public function getProdutos()
     {
-        try {
-            $produtos = Produto::orderBy('id', 'ASC')->get();
+        $produtos = Produto::orderBy('id', 'ASC')->get();
 
-            Log::info('Listando todos os produtos', ['quantidade' => $produtos->count()]);
-
-            $reponse = [
-                'status' => true,
-                'message' => 'Os produtos foram listados',
-                'data' => $produtos,
-            ];
-        } catch (Exception $e) {
-            Log::error('Erro ao listar produtos', [
-                'error_message' => $e->getMessage(),
-            ]);
-
-            $reponse = [
-                'status' => false,
-                'message' => 'Os produtos não foram listados',
-            ];
-        }
-        return $reponse;
+        return  [
+            'status' => true,
+            'message' => 'Os produtos foram listados',
+            'data' => $produtos,
+        ];
     }
 
-     /**
+    /**
      * Obtém um produto por ID
      *
      * @param int $produtoId O ID do produto a ser encontrado
@@ -53,32 +39,15 @@ class ProdutoService
      */
     public function getIdProdutos($produtoId)
     {
-        $produtos = null;
-        try {
-            $produtos = Produto::findOrFail($produtoId);
+        $produtos = Produto::findOrFail($produtoId);
 
-            Log::info('Trazendo produto por Id', ['dados' => $produtos]);
-
-            $response = [
-                'status' => true,
-                'message' => 'Listando produto por id',
-                'data' => $produtos,
-            ];
-        } catch (ModelNotFoundException | Exception $e) {
-            Log::error('Erro ao tentar trazer produto', [
-                'error_message' => $e->getMessage(),
-                'produtoId' => $produtoId
-            ]);
-
-            $response = [
-                'status' => false,
-                'message' => 'Produto não foi listado',
-            ];
-        }
-
-        return $response;
+        return [
+            'status' => true,
+            'message' => 'Listando produto por id',
+            'data' => $produtos,
+        ];
     }
-     /**
+    /**
      * Cria um novo produto
      *
      * @param array $data Os dados do produto a ser criado
@@ -89,36 +58,16 @@ class ProdutoService
     public function storeProdutos(array $data)
     {
         DB::beginTransaction();
-        try {
 
-            Log::info('Iniciando cadastro', ['dados' => $data]);
+        $produtos = produto::create($data);
 
-            $produtos = produto::create($data);
+        DB::commit();
 
-            DB::commit();
-
-            Log::info('Produto cadastrado!', ['produtos' => $produtos]);
-
-            $response = [
-                'status' => true,
-                'message' => 'Produto Cadastrado',
-                'data' => $produtos,
-            ];
-        } catch (Exception $e) {
-            DB::rollBack();
-
-            Log::error('Erro ao tentar cadastrar produto', [
-                'error_message' => $e->getMessage(),
-                'dados' => $data
-            ]);
-
-            $response = [
-                'status' => false,
-                'message' => 'produto não cadastrado',
-            ];
-        }
-
-        return $response;
+        return [
+            'status' => true,
+            'message' => 'Produto Cadastrado',
+            'data' => $produtos,
+        ];
     }
 
     /**
@@ -132,40 +81,22 @@ class ProdutoService
      */
     public function updateProdutos(array $data, $produtoId)
     {
-
         DB::beginTransaction();
-        try {
-            $produtos = Produto::findOrFail($produtoId);
 
-            Log::info('Iniciando atualização', ['dados' => $data]);
+        $produtos = Produto::findOrFail($produtoId);
 
-            $produtos->update($data);
+        $produtos->update($data);
 
-            DB::commit();
+        DB::commit();
 
-            Log::info('Produto atualizado!', ['produtos' => $produtos]);
-
-            return [
-                'status' => true,
-                'message' => 'Produto atualizado',
-                'data' => $produtos,
-            ];
-        } catch (ModelNotFoundException | Exception $e) {
-            DB::rollBack();
-
-            Log::error('Erro ao tentar atualizar produto', [
-                'error_message' => $e->getMessage(),
-                'dados' => $data
-            ]);
-
-            return [
-                'status' => false,
-                'message' => 'Produto não atualizado',
-            ];
-        }
+        return [
+            'status' => true,
+            'message' => 'Produto atualizado',
+            'data' => $produtos,
+        ];
     }
 
-     /**
+    /**
      * Exclui um produto existente
      *
      * @param int $produtoId O ID do produto a ser excluido
@@ -177,34 +108,14 @@ class ProdutoService
 
     public function destroyProdutosPorId($produtoId)
     {
-        $produtos = null;
-        try {
-            $produtos = Produto::findOrFail($produtoId);
+        $produtos = Produto::findOrFail($produtoId);
 
-            Log::info('Iniciando exclusão', ['dados' => $produtoId]);
+        $produtos->delete();
 
-            $produtos->delete();
-
-            Log::info('Produto excluído!', ['produtos' => $produtos]);
-
-            $reponse = [
-                'status' => true,
-                'message' => 'Produto excluído',
-                'data' => $produtos,
-            ];
-        } catch (ModelNotFoundException | Exception $e) {
-
-            Log::error('Erro ao tentar excluir produto', [
-                'error_message' => $e->getMessage(),
-                'dados' => $produtoId,
-            ]);
-
-            $reponse = [
-                'status' => false,
-                'message' => 'Produto não encontrado',
-            ];
-        }
-
-        return $reponse;
+        return [
+            'status' => true,
+            'message' => 'Produto excluído',
+            'data' => $produtos,
+        ];
     }
 }

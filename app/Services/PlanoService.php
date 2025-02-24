@@ -26,8 +26,6 @@ class PlanoService
         try {
             $planos = Plano::orderBy('id', 'ASC')->get();
 
-            Log::info('Listando todos os planos', ['quantidade' => $planos->count()]);
-
             $response = [
                 'status' => true,
                 'message' => 'Todos os planos foram listados',
@@ -46,7 +44,7 @@ class PlanoService
         return $response;
     }
 
-     /**
+    /**
      * Obtém um planos por id
      *
      * @param int $planoId O ID do plano a ser encontrado
@@ -58,29 +56,15 @@ class PlanoService
     {
         $planos = null;
 
-        try {
-            $planos = Plano::findOrFail($planoId);
-            Log::info('Trazendo plano por Id', ['dados' => $planos]);
+        $planos = Plano::findOrFail($planoId);
 
-            $response = [
-                'status' => true,
-                'data' => $planos,
-            ];
-        } catch (ModelNotFoundException | Exception $e) {
-            Log::error('Erro ao tentar trazer plano', [
-                'error_message' => $e->getMessage(),
-                'planoId' => $planoId
-            ]);
-
-            $response = [
-                'status' => false,
-                'message' => 'plano não foi listado',
-            ];
-        }
-        return $response;
+        return [
+            'status' => true,
+            'data' => $planos,
+        ];
     }
 
-     /**
+    /**
      * Obtém uma lista de planos e seus produtos
      *
      * @return array{status: bool, message: string, data:  \Illuminate\Database\Eloquent\Collection|null}
@@ -88,22 +72,13 @@ class PlanoService
      */
     public function getPlanosProdutos()
     {
-        try {
-            $planos = Plano::with(['produtos', 'logs'])->get();
+        $planos = Plano::with(['produtos', 'logs'])->get();
 
-            $response =  [
-                'status' => true,
-                'message' => 'Planos e seus produtos listados',
-                'data' => $planos,
-            ];
-        } catch (Exception $e) {
-            $response = [
-                'status' => true,
-                'message' => 'Planos e seus produtos não listados',
-
-            ];
-        }
-        return  $response;
+        return [
+            'status' => true,
+            'message' => 'Planos e seus produtos listados',
+            'data' => $planos,
+        ];
     }
 
     /**
@@ -114,20 +89,13 @@ class PlanoService
      */
     public function getTodosLogs()
     {
-        try {
-            $logs = PlanoProdutoLog::with('produto')->paginate(5);
-            $response = [
-                'status' => true,
-                'message' => 'Logs Listados',
-                'data' => $logs,
-            ];
-        } catch (Exception $e) {
-            $response = [
-                'status' => true,
-                'message' => 'Não foi possível listar logs',
-            ];
-        }
-        return $response;
+        $logs = PlanoProdutoLog::with('produto')->paginate(5);
+
+        return [
+            'status' => true,
+            'message' => 'Logs Listados',
+            'data' => $logs,
+        ];
     }
 
     /**
@@ -140,30 +108,20 @@ class PlanoService
      */
     public function storePlanos(array $data, $produtoId)
     {
-        $produto = null;
         DB::beginTransaction();
-        try {
-            $planos = Plano::create($data);
-            $produto = Produto::findOrFail($produtoId);
 
-            $planos->produtos()->attach($produto->id);
+        $planos = Plano::create($data);
+        $produto = Produto::findOrFail($produtoId);
 
-            DB::commit();
+        $planos->produtos()->attach($produto->id);
 
-            $reponse = [
-                'status' => true,
-                'message' => 'Plano Cadastrado',
-                'data' => $planos,
-            ];
-        } catch (Exception $e) {
-            DB::rollBack();
+        DB::commit();
 
-            $reponse = [
-                'status' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-        return $reponse;
+        return [
+            'status' => true,
+            'message' => 'Plano Cadastrado',
+            'data' => $planos,
+        ];
     }
 
     /**
@@ -176,33 +134,24 @@ class PlanoService
      */
     public function postPlanoProduto($planoId, $produtoId)
     {
-        try {
+        $planos = Plano::findOrFail($planoId);
+        $produto = Produto::findOrFail($produtoId);
 
-            $planos = Plano::findOrFail($planoId);
-            $produto = Produto::findOrFail($produtoId);
+        $planos->produtos()->attach($produto->id);
 
-            $planos->produtos()->attach($produto->id);
+        PlanoProdutoLog::create([
+            'plano_id' => $planoId,
+            'produto_id' => $produtoId,
+            'action' => 'Adicionado',
+        ]);
 
-            PlanoProdutoLog::create([
-                'plano_id' => $planoId,
-                'produto_id' => $produtoId,
-                'action' => 'Adicionado',
-            ]);
-
-            $response = [
-                'status' => true,
-                'data' => $planos,
-            ];
-        } catch (Exception $e) {
-            $response = [
-                'status' => false,
-                'message' => 'Não foi possível associar produto ao plano',
-            ];
-        }
-        return $response;
+        return [
+            'status' => true,
+            'data' => $planos,
+        ];
     }
 
-     /**
+    /**
      * Atualiza os dados de um plano existente
      *
      * @param array $data Os dados do plano a ser atualizado
@@ -214,40 +163,17 @@ class PlanoService
      */
     public function updatePlanos(array $data, $planoId)
     {
-        DB::beginTransaction();
-        try {
-            $plano = Plano::findOrFail($planoId);
+        $plano = Plano::findOrFail($planoId);
 
-            Log::info('Iniciando atualização do plano', ['dados' => $data]);
+        $plano->update($data);
 
-            $plano->update($data);
+        DB::commit();
 
-            DB::commit();
-
-            Log::info('Plano atualizado com sucesso!', ['plano' => $plano]);
-
-
-            $response = [
-                'status' => true,
-                'message' => 'Plano atualizado',
-                'data' => $plano,
-            ];
-        } catch (ModelNotFoundException | Exception $e) {
-
-            DB::rollBack();
-
-            Log::error('Erro ao tentar atualizar o plano', [
-                'error_message' => $e->getMessage(),
-                'dados' => $data,
-            ]);
-
-            // Retornar erro com a mensagem
-            $response = [
-                'status' => false,
-                'message' => 'Plano não atualizado',
-            ];
-        }
-        return $response;
+        return [
+            'status' => true,
+            'message' => 'Plano atualizado',
+            'data' => $plano,
+        ];
     }
 
     /**
@@ -261,53 +187,22 @@ class PlanoService
      */
     public function destroyDesassociarProduto($planoId, $produtoId)
     {
-        $planos = null;
-        $produto = null;
-        try {
+        $planos = Plano::findOrFail($planoId);
+        $produto = Produto::findOrFail($produtoId);
 
-            $planos = Plano::findOrFail($planoId);
-            $produto = Produto::findOrFail($produtoId);
+        $planos->produtos()->detach($produto->id);
 
-            Log::info('Iniciando desassociação do produto', [
-                'plano_id' => $planoId,
-                'produto_id' => $produtoId
-            ]);
+        PlanoProdutoLog::create([
+            'plano_id' => $planoId,
+            'produto_id' => $produtoId,
+            'action' => 'Removido',
+        ]);
 
-            $planos->produtos()->detach($produto->id);
-
-
-            Log::info('Produto desassociado do plano', [
-                'plano_id' => $planoId,
-                'produto_id' => $produtoId
-            ]);
-
-            PlanoProdutoLog::create([
-                'plano_id' => $planoId,
-                'produto_id' => $produtoId,
-                'action' => 'Removido',
-            ]);
-
-
-            $response = [
-                'status' => true,
-                'message' => 'Produto desassociado do plano com sucesso.',
-                'data' => $planos,
-            ];
-        } catch (ModelNotFoundException | Exception $e) {
-
-            Log::error('Erro ao tentar desassociar produto', [
-                'error_message' => $e->getMessage(),
-                'plano_id' => $planoId,
-                'produto_id' => $produtoId
-            ]);
-
-            $response = [
-                'status' => false,
-                'message' => 'Erro ao tentar desassociar o produto do plano.',
-            ];
-        }
-
-        return $response;
+        return [
+            'status' => true,
+            'message' => 'Produto desassociado do plano com sucesso.',
+            'data' => $planos,
+        ];
     }
 
     /**
@@ -321,33 +216,14 @@ class PlanoService
 
     public function destroyPlanosPorId($planoId)
     {
-        $planos = null;
-        try {
-            $planos = Plano::findOrFail($planoId);
+        $planos = Plano::findOrFail($planoId);
 
-            Log::info('Iniciando exclusão', ['dados' => $planoId]);
+        $planos->delete();
 
-            $planos->delete();
-
-            Log::info('Plano excluído!', ['produtos' => $planos]);
-
-            $reponse = [
-                'status' => true,
-                'message' => 'Plano excluído',
-                'data' => $planos,
-            ];
-        } catch (ModelNotFoundException | Exception $e) {
-
-            Log::error('Erro ao tentar excluir produto', [
-                'error_message' => $e->getMessage(),
-                'dados' => $planoId,
-            ]);
-
-            $reponse = [
-                'status' => false,
-                'message' => 'Plano não excluído',
-            ];
-        }
-        return $reponse;
+        return [
+            'status' => true,
+            'message' => 'Plano excluído',
+            'data' => $planos,
+        ];
     }
 }
