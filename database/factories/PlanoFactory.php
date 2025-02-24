@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\PlanoNameEnum;
 use App\Models\Produto;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,7 +16,8 @@ class PlanoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nome' => $this->faker->randomElement(PlanoNameEnum::cases())->value,
+            'descricao' => $this->faker->paragraph(2),
         ];
     }
 }
