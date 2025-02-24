@@ -41,18 +41,14 @@ class ProdutoController extends Controller
 
     public function getTodosProdutos(): JsonResponse
     {
-
         $result = $this->produtoService->getProdutos();
 
-        if ($result['status']) {
-            return $this->successResponse([
-                ProdutoResource::collection($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            ProdutoResource::collection($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * GET /api/produtos/{id}
      *
      * Retorna um unico produto pelo id
@@ -77,12 +73,9 @@ class ProdutoController extends Controller
     {
         $result = $this->produtoService->getIdProdutos($produtoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new ProdutoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new ProdutoResource($result['data'])
+        ]);
     }
 
     /**
@@ -114,15 +107,12 @@ class ProdutoController extends Controller
 
         $result = $this->produtoService->storeProdutos($data);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new ProdutoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new ProdutoResource($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * POST /api/produtos
      *
      * Atualiza um produto existente
@@ -151,15 +141,12 @@ class ProdutoController extends Controller
 
         $result = $this->produtoService->updateProdutos($data, $produtoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new ProdutoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new ProdutoResource($result['data'])
+        ]);
     }
 
- /**
+    /**
      * DELETE api/produtos-deletar/{produtoId}
      *
      * Remove um produto existente
@@ -182,14 +169,10 @@ class ProdutoController extends Controller
      */
     public function destroyProdutos($produtoId)
     {
-
         $result = $this->produtoService->destroyProdutosPorId($produtoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new ProdutoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new ProdutoResource($result['data'])
+        ]);
     }
 }

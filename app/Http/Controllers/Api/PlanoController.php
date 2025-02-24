@@ -44,18 +44,14 @@ class PlanoController extends Controller
 
     public function getTodosPlanos(): JsonResponse
     {
-
         $result = $this->planoService->getPlanos();
 
-        if ($result['status']) {
-            return $this->successResponse([
-                PlanoResource::collection($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            PlanoResource::collection($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * GET /api/plano-produto-logs
      *
      * Retorna uma lista de logs
@@ -77,12 +73,9 @@ class PlanoController extends Controller
     {
         $result = $this->planoService->getTodosLogs();
 
-        if ($result['status']) {
-            return $this->successResponse([
-                PlanoProdutoLogResource::collection($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            PlanoProdutoLogResource::collection($result['data'])
+        ]);
     }
 
     /**
@@ -110,12 +103,9 @@ class PlanoController extends Controller
     {
         $result = $this->planoService->getIdPlanos($planoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new PlanoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new PlanoResource($result['data'])
+        ]);
     }
 
     /**
@@ -140,12 +130,9 @@ class PlanoController extends Controller
     {
         $result = $this->planoService->getPlanosProdutos();
 
-        if ($result['status']) {
-            return $this->successResponse([
-                PlanoProdutoResource::collection($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            PlanoProdutoResource::collection($result['data'])
+        ]);
     }
 
     /**
@@ -179,15 +166,12 @@ class PlanoController extends Controller
 
         $result = $this->planoService->storePlanos($data, $produtoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new PlanoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new PlanoResource($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * POST /api/planos/{planoId}/produtos/{produtoID}
      *
      * Associa um plano a um produto
@@ -213,15 +197,11 @@ class PlanoController extends Controller
      */
     public function postAssociarProduto($planoId, $produtoId): JsonResponse
     {
-
         $result = $this->planoService->postPlanoProduto($planoId, $produtoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new PlanoProdutoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new PlanoProdutoResource($result['data'])
+        ]);
     }
 
     /**
@@ -255,15 +235,12 @@ class PlanoController extends Controller
 
         $result = $this->planoService->updatePlanos($data, $planoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new PlanoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new PlanoResource($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * DELETE api/planos/{planoId}/produtos/{produtoID}
      *
      * Remove um produto de um plano existente
@@ -288,18 +265,14 @@ class PlanoController extends Controller
      */
     public function destroyDesassociarProduto($planoId, $produtoId): JsonResponse
     {
-
         $result = $this->planoService->destroyDesassociarProduto($planoId, $produtoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new PlanoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new PlanoResource($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * DELETE api/planos/{planoId}/produtos/{produtoID}
      *
      * Remove um plano existente
@@ -322,14 +295,10 @@ class PlanoController extends Controller
      */
     public function destroyPlanos($planoId)
     {
-
         $result = $this->planoService->destroyPlanosPorId($planoId);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new PlanoResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new PlanoResource($result['data'])
+        ]);
     }
 }
